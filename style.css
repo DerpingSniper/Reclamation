@@ -1,0 +1,17 @@
+#canvas {
+    width: 600px;
+    height: 600px;
+    background-color: #CCC;
+    margin-left: 30%;
+    margin-right: 30%;
+    margin-top: 100px;
+}
+            
+body {
+    background-color: #0F000F;
+}
+
+@font-face {
+    font-family: rubberBiscuit;
+    src: url(rubber-biscuit.bold.ttf);
+}
