@@ -24,8 +24,18 @@ var Zombie = function (x, y) {
             } else {
                 this.x = platform.x
             }
+            
+            if (this.y >= platform.y + platform.w){
+                this.y = platform.y + platform.w;
+            }
         } else {
             this.fall = true;
+        }
+        
+        bullet = this.collideBullets();
+        if (bullet) {
+            this.erase();
+            bullet.erase();
         }
         
         if (this.fall) {

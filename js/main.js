@@ -6,7 +6,6 @@ var ctx;
 //Player vars
 var PLAYER_W = 50;
 var PLAYER_H = 50;
-var JUMP = 50;
 var char = new Player(15, CANVAS_W / 2, PLAYER_W, PLAYER_H);
 var fallSpeed = 5;
 var gameState;
@@ -82,6 +81,10 @@ fireKey = false;
 UP = 38;
 DOWN = 40;
 FIRE = 32;
+//Physics vars
+var JUMP_SPEED = 10;
+var MAX_FALL_SPEED = 14;
+var FALL_ACCEL = .4;
 
 function gameLoop() {
 	clearCanvas();
@@ -96,6 +99,7 @@ function gameLoop() {
 	drawOver();
 	drawShop();
 	drawGet();
+    drawWText();
 	checkScore();
 }
 
@@ -173,7 +177,7 @@ function drawOver() {
 	if (gameState == states.over) {
 		ctx.drawImage(dead, CANVAS_W / 2 - dead.width / 2 + 5, CANVAS_H / 2 - dead.height / 2 + 5);
 		ctx.font = "24px rubberBiscuit";
-        ctx.fillStyle = "black";
+		ctx.fillStyle = "black";
 		ctx.fillText(char.score, 120, 310);
 		ctx.fillText(char.best, 475, 310);
 	}
@@ -186,9 +190,15 @@ function drawShop() {
 }
 
 function drawGet() {
-		if (gameState == states.get) {
-			ctx.drawImage(get.text, CANVAS_W / 2 - get.text.width / 2, CANVAS_H / 2 - get.gun.height / 3);
-			ctx.drawImage(get.gun, CANVAS_W / 2 - get.gun.width / 2, CANVAS_H / 2 - get.gun.height / 2);
+	if (gameState == states.get) {
+		ctx.drawImage(get.text, CANVAS_W / 2 - get.text.width / 2, CANVAS_H / 2 - get.gun.height / 3);
+		ctx.drawImage(get.gun, CANVAS_W / 2 - get.gun.width / 2, CANVAS_H / 2 - get.gun.height / 2);
+	}
+}
+
+function drawWText() {
+		if (gameState == states.wait) {
+			ctx.drawImage(wText, CANVAS_W / 2 - wText.width / 2, CANVAS_H / 2 - wText.height / 2);
 		}
 	}
 	//Game functions
@@ -279,18 +289,22 @@ function click(e) {
 	if (gameState == states.title) {
 		gameState = states.play;
 	} else if (gameState == states.over) {
-		if (!char.gun) {
-			gameState = states.shop;
-		} else {
-			reset();
-		}
+        if (x > 237 && x < 371 && y > 371 && y < 413) {
+            if (!char.gun) {
+                gameState = states.shop;
+            } else {
+                gameState = states.wait;
+            }
+        }
 	} else if (gameState == states.shop) {
-		if (!char.gun) {
-			char.gun = true;
-			gameState = states.get;
-		} else {
-			reset();
-		}
+        if (x > 202 && x < 398 && y > 467 && y < 514){
+            if (!char.gun) {
+                char.gun = true;
+                gameState = states.get;
+            } else {
+                gameState = states.wait;
+            }
+        }
 	} else if (gameState == states.get) {
 		gameState = states.wait;
 	} else if (gameState == states.wait) {
