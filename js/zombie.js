@@ -14,9 +14,9 @@ var Zombie = function (x, y) {
 		this.y++;
 		platform = this.collidePlatforms();
 		if (platform) {
-			if (this.y >= platform.y - (this.h + 1)) {
+			if (this.y + this.h + 2 >= platform.y) {
 				this.fall = false;
-				this.y--;
+                this.y = platform.y - this.h;
 			}
 		} else {
 			this.fall = true;
@@ -27,7 +27,7 @@ var Zombie = function (x, y) {
 			bullet.erase();
 		}
 		if (this.fall) {
-			this.y += fallSpeed;
+			this.y += FALL_SPEED;
 			this.x -= moveSpeed + 0.1;
 		} else {
 			this.x -= moveSpeed + 1;

@@ -94,21 +94,11 @@ var Player = function (x, y, w, h) {
 					this.ySpeed = 0;
 					this.jumping = false;
 				}
-				if (this.y < 0) {
-					this.y = 0;
-					this.ySpeed = 0;
-					this.jumping = false;
-				}
 			} else if (this.ySpeed > 0) { //moving down
 				this.y += Math.ceil(this.ySpeed);
 				platform = this.collidePlatforms();
 				if (platform) {
 					this.y = platform.y - this.h;
-					this.ySpeed = 0;
-					this.airborn = false;
-				}
-				if (this.y > CANVAS_H - this.h) {
-					this.y = CANVAS_H - this.h;
 					this.ySpeed = 0;
 					this.airborn = false;
 				}

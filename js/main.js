@@ -7,7 +7,6 @@ var ctx;
 var PLAYER_W = 50;
 var PLAYER_H = 50;
 var char = new Player(15, CANVAS_W / 2, PLAYER_W, PLAYER_H);
-var fallSpeed = 5;
 var gameState;
 var states = {
 		title: 0,
@@ -18,8 +17,13 @@ var states = {
 			noGun: 3
 		},
 		get: 4
-	}
-	//Platform vars
+	};
+//Physics vars
+var JUMP_SPEED = 10 + (char.boosts.jump * 50);
+var MAX_FALL_SPEED = 14;
+var FALL_ACCEL = .4;
+var FALL_SPEED = 5;
+//Platform vars
 var gap = 100;
 platforms = [];
 platforms[0] = new Platform(0, CANVAS_H / 2 + PLAYER_H);
@@ -55,10 +59,6 @@ fireKey = false;
 UP = 38;
 DOWN = 40;
 FIRE = 32;
-//Physics vars
-var JUMP_SPEED = 10 + char.boosts.jump;
-var MAX_FALL_SPEED = 14;
-var FALL_ACCEL = .4;
 //Image vars
 bg[0] = new Image();
 bg[0].src = "img/bgBack.png";
@@ -68,6 +68,8 @@ bg[2] = new Image();
 bg[2].src = "img/bgClose.png";
 bg[3] = new Image();
 bg[3].src = "img/bgFog.png";
+var shot = new Image();
+shot.src = "img/bullet.png";
 var dead = new Image();
 dead.src = "img/dead.png";;
 var store = {
@@ -84,6 +86,8 @@ get.gun.src = "img/gun.png";
 get.text.src = "img/getText.png";
 var wText = new Image();
 wText.src = "img/wText.png";
+var plat = new Image();
+plat.src = "img/platform.png";
 var bar = {
 	butt: new Image(),
 	buttR: new Image(),
@@ -118,9 +122,8 @@ function drawPlayer() {
 }
 
 function drawPlatforms() {
-	ctx.fillStyle = "grey";
-	ctx.fillRect(platforms[0].x, platforms[0].y, platforms[0].w, 600);
-	ctx.fillRect(platforms[1].x, platforms[1].y, platforms[1].w, 600);
+	ctx.drawImage(plat, platforms[0].x, platforms[0].y, platforms[0].w, 600);
+	ctx.drawImage(plat, platforms[1].x, platforms[1].y, platforms[1].w, 600);
 }
 
 function drawZombies() {
@@ -132,8 +135,7 @@ function drawZombies() {
 
 function drawBullets() {
 	for (var b in bullets) {
-		ctx.fillStyle = "yellow";
-		ctx.fillRect(bullets[b].x, bullets[b].y, bullets[b].w, bullets[b].h);
+		ctx.drawImage(shot, 0 + bullets[b].frame*10, 0, 10, 5, bullets[b].x, bullets[b].y, bullets[b].w, bullets[b].h);
 	}
 }
 
@@ -295,6 +297,13 @@ function moveStuff() {
 			platforms[p].move();
 			if (platforms[p].x <= -platforms[p].w) {
 				platforms[p].x = CANVAS_W + 200;
+                platforms[p].y = Math.random()*CANVAS_H + CANVAS_H/3;
+                if (platforms[p].y < CANVAS_H/2) {
+                    platforms[p].y += CANVAS_H/2;
+                }
+                if (platforms[p].y > CANVAS_H) {
+                    platforms[p].y = CANVAS_H - CANVAS_H/5;
+                }
 			}
 		}
 		for (var b in bullets) {
@@ -309,12 +318,6 @@ function moveStuff() {
 		if (vx[x] <= -CANVAS_W) {
 			vx[x] = 0;
 		}
-	}
-	if (platforms[0].y < 250) {
-		platforms[0].y -= 200;
-	}
-	if (platforms[1].y < 250) {
-		platforms[1].y -= 200;
 	}
 }
 
